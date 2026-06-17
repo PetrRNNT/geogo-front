@@ -1,54 +1,69 @@
 <template>
   <div id="app">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo">
-          <span class="logo-icon">⌖</span>
-          <span class="logo-text">GeoGo</span>
-        </div>
-        <nav class="nav">
-          <button
-            class="nav-btn"
-            :class="{ active: activeTab === 'search' }"
-            @click="activeTab = 'search'"
-          >
-            Поиск
-          </button>
-          <button
-            class="nav-btn"
-            :class="{ active: activeTab === 'add' }"
-            @click="activeTab = 'add'"
-          >
-            Добавить место
-          </button>
-          <button
-            class="nav-btn"
-            :class="{ active: activeTab === 'places' }"
-            @click="activeTab = 'places'"
-          >
-            Все места
-          </button>
-        </nav>
-      </div>
-    </header>
+    <AuthView v-if="!auth.isLoggedIn" @success="onLogin" />
 
-    <main class="main">
-      <SearchView v-if="activeTab === 'search'" />
-      <AddPlaceView v-if="activeTab === 'add'" />
-      <PlacesView v-if="activeTab === 'places'" />
-    </main>
+    <template v-else>
+      <header class="header">
+        <div class="header-inner">
+          <div class="logo">
+            <span class="logo-icon">⌖</span>
+            <span class="logo-text">GeoGo</span>
+          </div>
+          <nav class="nav">
+            <button
+              class="nav-btn"
+              :class="{ active: activeTab === 'search' }"
+              @click="activeTab = 'search'"
+            >
+              Поиск
+            </button>
+            <button
+              class="nav-btn"
+              :class="{ active: activeTab === 'add' }"
+              @click="activeTab = 'add'"
+            >
+              Добавить место
+            </button>
+            <button
+              class="nav-btn"
+              :class="{ active: activeTab === 'places' }"
+              @click="activeTab = 'places'"
+            >
+              Все места
+            </button>
+          </nav>
+          <div class="user-info">
+            <span class="user-email">{{ auth.email }}</span>
+            <button class="logout-btn" @click="auth.logout()">Выйти</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <SearchView v-if="activeTab === 'search'" />
+        <AddPlaceView v-if="activeTab === 'add'" />
+        <PlacesView v-if="activeTab === 'places'" />
+      </main>
+    </template>
   </div>
 </template>
 
 <script>
+import { auth } from './stores/auth.js'
+import AuthView from './views/AuthView.vue'
 import SearchView from './views/SearchView.vue'
 import AddPlaceView from './views/AddPlaceView.vue'
 import PlacesView from './views/PlacesView.vue'
 
 export default {
-  components: { SearchView, AddPlaceView, PlacesView },
+  components: { AuthView, SearchView, AddPlaceView, PlacesView },
   data() {
-    return { activeTab: 'search' }
+    return { activeTab: 'search', auth }
+  },
+  methods: {
+    onLogin() {
+      this.activeTab = 'search'
+    },
   },
 }
 </script>
@@ -157,5 +172,30 @@ body {
   margin: 0 auto;
   width: 100%;
   padding: 32px 24px;
+}
+.user-info {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-email {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.logout-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.logout-btn:hover {
+  border-color: var(--error);
+  color: var(--error);
 }
 </style>

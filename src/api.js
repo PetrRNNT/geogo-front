@@ -1,7 +1,16 @@
 import axios from 'axios'
+import { auth } from './stores/auth.js'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+})
+
+// Автоматически добавляет токен в каждый запрос
+api.interceptors.request.use((config) => {
+  if (auth.token) {
+    config.headers.Authorization = `Bearer ${auth.token}`
+  }
+  return config
 })
 
 export const geocode = (address) =>
@@ -13,7 +22,5 @@ export const reverseGeocode = (lat, lon) =>
 export const getPlaces = () =>
   api.get('/places')
 
-export const addPlace = (place, apiKey) =>
-  api.post('/places', place, {
-    headers: { 'X-API-Key': apiKey }
-  })
+export const addPlace = (place) =>
+  api.post('/places', place)
