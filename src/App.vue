@@ -19,17 +19,18 @@
             </button>
             <button
               class="nav-btn"
-              :class="{ active: activeTab === 'add' }"
-              @click="activeTab = 'add'"
-            >
-              Добавить место
-            </button>
-            <button
-              class="nav-btn"
               :class="{ active: activeTab === 'places' }"
               @click="activeTab = 'places'"
             >
               Все места
+            </button>
+            <button
+              v-if="auth.isAdmin"
+              class="nav-btn"
+              :class="{ active: activeTab === 'add' }"
+              @click="activeTab = 'add'"
+            >
+              + Добавить место
             </button>
           </nav>
           <div class="user-info">

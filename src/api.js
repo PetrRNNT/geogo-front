@@ -24,3 +24,6 @@ export const getPlaces = () =>
 
 export const addPlace = (place) =>
   api.post('/places', place)
+
+export const deletePlace = (id) =>
+  api.delete(`/places/${id}`)
